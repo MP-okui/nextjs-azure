@@ -1,5 +1,6 @@
 import Head from 'next/head'
 import Image from 'next/image'
+import { useEffect, useState } from 'react';
 import { Inter } from '@next/font/google'
 import styles from '@/styles/Home.module.css'
 
@@ -12,6 +13,13 @@ export async function getServerSideProps() {
 
 export default function Home({ data }: { data: string }) {
   const serverData: { time: string } = JSON.parse(data);
+
+  const [time, setTime] = useState<Date | null>(null);
+  useEffect(() => {
+      fetch('/api/time')
+      .then(res => res.json())
+      .then(json => setTime(new Date(json.time)));
+  }, []);
 
   return (
     <>
@@ -67,6 +75,9 @@ export default function Home({ data }: { data: string }) {
         </div>
 
         <p>The server side time is {serverData.time}</p>
+
+        <p>{time &&
+            `The API time is ${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}`}</p>
 
         <div className={styles.grid}>
           <a
