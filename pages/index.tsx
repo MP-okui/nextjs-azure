@@ -5,7 +5,14 @@ import styles from '@/styles/Home.module.css'
 
 const inter = Inter({ subsets: ['latin'] })
 
-export default function Home() {
+export async function getServerSideProps() {
+    const data = JSON.stringify({ time: new Date() });
+    return { props: { data } };
+}
+
+export default function Home({ data }: { data: string }) {
+  const serverData: { time: string } = JSON.parse(data);
+
   return (
     <>
       <Head>
@@ -58,6 +65,8 @@ export default function Home() {
             />
           </div>
         </div>
+
+        <p>The server side time is {serverData.time}</p>
 
         <div className={styles.grid}>
           <a
