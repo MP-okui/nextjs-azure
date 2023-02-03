@@ -3,16 +3,25 @@ import Image from 'next/image'
 import { useEffect, useState } from 'react';
 import { Inter } from '@next/font/google'
 import styles from '@/styles/Home.module.css'
+import { env } from 'process';
 
 const inter = Inter({ subsets: ['latin'] })
 
+type Props = {
+  time: string;
+  node: string;
+}
+
 export async function getServerSideProps() {
-    const data = JSON.stringify({ time: new Date() });
+    const data = {
+      time: new Date().toString(),
+      node: process.versions.node,
+    };
     return { props: { data } };
 }
 
-export default function Home({ data }: { data: string }) {
-  const serverData: { time: string } = JSON.parse(data);
+export default function Home({ data }: { data: Props }) {
+  const serverData = data;
 
   const [time, setTime] = useState<Date | null>(null);
   useEffect(() => {
@@ -74,6 +83,7 @@ export default function Home({ data }: { data: string }) {
           </div>
         </div>
 
+        <p>Node version is {serverData.node}</p>
         <p>The server side time is {serverData.time}</p>
 
         <p>{time &&
